@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+.reviews{
+  width: 90%;
+  height: 25vh;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 40px;
+}
+
+.reviews .swiper{
+  height: 100%;
+}
+
+.reviews .swiper .bg-gray-200{
+  height: 100%;
+}
+
+.button-group{
+  display: inline-flex;
+  margin-top: 12px;
+}
+
+.button-group span{
+  margin-left: 10px;
+}
+
+.img-product{
+  max-width: 100%;
+  height: auto;
+  height: 210px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.reviews {
+  width: 90%;
+  height: 25vh;
+  margin: auto;
+  margin-top: 64px;
+  margin-bottom: 80px;
+}
+
+.contact_us{
+  margin-top: 150px;
+}
