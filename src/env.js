@@ -1,5 +1,5 @@
 const env = {
-    baseUrl: "http://ecommerce.ahmedgamaldev.com/api",
+    baseUrl: "https://ecommerce.ahmedgamaldev.com/api",
     isProduction: "false",
   };
   

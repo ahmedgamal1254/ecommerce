@@ -51,3 +51,9 @@
 .contact_us{
   margin-top: 150px;
 }
+
+.row-price{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

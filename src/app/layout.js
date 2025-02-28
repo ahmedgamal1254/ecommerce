@@ -5,6 +5,7 @@ import "./globals.css";
 import { WishlistProvider } from "@/WishlistContext";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { ProductsProvider } from "@/ProductsContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,10 +30,12 @@ export default function RootLayout({ children }) {
       >
         <CartProvider>
           <WishlistProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </WishlistProvider>
+            <ProductsProvider>
+              <Navbar />
+              {children}
+              <Footer />
+            </ProductsProvider>
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

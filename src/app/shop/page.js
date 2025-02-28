@@ -1,53 +1,42 @@
 "use client";
-import React, { useState,useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useContext } from "react";
 import { FaSearch } from "react-icons/fa";
-import { motion } from "motion/react"
+import { motion } from "framer-motion";
 import ProductCard from "@/components/Product";
 import env from "@/env";
 import LoadingProduct from "@/components/loadingProduct";
+import ProductSidebarFilter from "@/components/sidebar";
+import { ProductsContext } from "@/ProductsContext";
 
-const categories = [];
+const categories = ["All", "Electronics", "Clothing", "Home & Kitchen"]; // Example categories
 
 export default function ShopPage() {
-
-  const [products,setProducts] = useState([]);
+  const { products, setProducts, loadingProduct } = useContext(ProductsContext);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [loadingProduct,setLoadingProduct] = useState(false);
 
-  useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          setLoadingProduct(true)
-          const response = await fetch(env.baseUrl+"/products?limit=32&page=1");
-          const result = await response.json();
-          setProducts(result.data["data"]);
-          setLoadingProduct(false)
-        } catch (error) {
-          console.error("Error fetching products:", error);
-        }
-      };
-
-      fetchProducts();
-  }, []);
-
-  const handlesearch = async (term) => {
+  // Handle search functionality
+  const handleSearch = async (term) => {
     try {
       const response = await fetch(
-        env.baseUrl+`/products/search?search=${encodeURIComponent(term)}`
+        `${env.baseUrl}/products/search?search=${encodeURIComponent(term)}`
       );
       const result = await response.json();
-      // Adjust this if your API response structure is different
-      setProducts(result.data.data);
+      // Ensure the response data is an array
+      if (Array.isArray(result.data.data)) {
+        setProducts(result.data.data);
+      } else {
+        setProducts([]);
+      }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      setProducts([]);
     }
   };
 
+  // Handle search input change
   const handleChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-    handlesearch(term);
+    handleSearch(term);
   };
 
   return (
@@ -69,42 +58,47 @@ export default function ShopPage() {
             />
             <FaSearch className="absolute top-3 left-4 text-gray-500" />
           </div>
-          <div className="flex space-x-4">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
-                  selectedCategory === category
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "bg-white text-gray-800 border border-gray-300 hover:bg-blue-100"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Products Grid */}
-        
-        <Suspense fallback={<LoadingProduct />}>
-          <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {loadingProduct ? (
-                Array.from({ length: 8 }).map((_, index) => (<LoadingProduct />))
-              ):(
-                products.map((product) => (
+        <div className="grid grid-cols-[auto_1fr] gap-8">
+          {/* Sidebar */}
+          <div className="w-64">
+            <ProductSidebarFilter />
+          </div>
+
+          {/* Products Area */}
+          <div className="">
+            {loadingProduct ? (
+              // Show loading skeletons
+              <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {Array.from({ length: 6 }).map((_, index) => (
                   <motion.div
-                    key={product.id}
-                    whileHover={{ scale: 1.05 }}
+                    key={index}
                     className="bg-white rounded-2xl shadow-2xl overflow-hidden transition transform duration-300"
                   >
-                    <ProductCard product={product} />
+                    <LoadingProduct />
                   </motion.div>
-                ))
-              )}
-            </motion.div>
-        </Suspense>
+                ))}
+              </motion.div>
+            ) : (
+              // Show actual products
+              Array.isArray(products) && (
+                <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {products.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-white rounded-2xl shadow-2xl overflow-hidden transition transform duration-300"
+                    >
+                      <ProductCard product={product} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
