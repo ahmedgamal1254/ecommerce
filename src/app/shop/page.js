@@ -61,7 +61,7 @@ export default function ShopPage() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-[auto_1fr] gap-8">
+        <div className="flex flex-col sm:flex-row gap-8">
           {/* Sidebar */}
           <div className="w-64">
             <ProductSidebarFilter />
