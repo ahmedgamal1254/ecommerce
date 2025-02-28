@@ -1,6 +1,6 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useContext, useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useContext, useState } from "react";
 import env from "@/env";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,14 +15,15 @@ import { WishlistContext } from "@/WishlistContext";
 import ReviewProduct from "@/components/ReviewProduct";
 
 const ProductPage = () => {
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const pathSegments = window.location.pathname.split('/');
-  const id = pathSegments[pathSegments.length - 1];
+  const params = useParams(); // 🚀 params is now a Promise
+  const id=params.id
+  console.log(params.id)
 
-  console.log(id)
 
   const { cart, setCart } = useContext(CartContext);
   const { wishlist, setWishlist } = useContext(WishlistContext);
@@ -233,7 +234,7 @@ const ProductPage = () => {
       </div>
 
       {/* تقييم المنتج */}
-      <ReviewProduct />
+      <ReviewProduct product_id={product.id} />
     </div>
   );
 };

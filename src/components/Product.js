@@ -148,10 +148,11 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Product Details */}
-      <Link href={`/shop/product/${id}`}>
+      
         <div className="p-4">
-          <h3 className="text-lg font-semibold mb-2">{title}</h3>
-
+          <Link href={`/shop/product/${id}`}>
+            <h3 className="text-lg font-semibold mb-2">{title}</h3>
+          </Link>
           {/* Price and Sale Price */}
           <div className="flex items-center gap-2 mb-4">
             {salePrice ? (
@@ -187,8 +188,6 @@ const ProductCard = ({ product }) => {
             </button>
           </div>
         </div>
-
-      </Link>
     </div>
   );
 };
