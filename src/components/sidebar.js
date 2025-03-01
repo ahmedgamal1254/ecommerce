@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 const ProductSidebarFilter = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedPriceRange, setSelectedPriceRange] = useState([0, 1000]); // Min-Max Price Range
+  const [selectedPriceRange, setSelectedPriceRange] = useState([0, 5000]); // Min-Max Price Range
   const { products, setProducts, loadingProduct } = useContext(ProductsContext);
 
   // Fetch categories on mount
@@ -27,11 +27,9 @@ const ProductSidebarFilter = () => {
   const handleCategoryChange = (categoryId) => {
     setSelectedCategories((prev) =>
       prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId) // Remove if already selected
-        : [...prev, categoryId] // Add if not selected
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
     );
-
-
   };
 
   // Handle price range change
