@@ -188,7 +188,7 @@ const ProductPage = () => {
         {/* ✅ Product Details */}
         <div className="space-y-4">
           <img src={`${env.base}/public/app/${product.image}`} />
-          <p className="text-gray-700">{product.long_description}</p>
+          <div dangerouslySetInnerHTML={{ __html: product.long_description }} />
           <div className="flex items-center gap-2">
             {product.sale_price ? (
               <>

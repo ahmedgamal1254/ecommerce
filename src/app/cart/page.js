@@ -252,8 +252,9 @@ export default function Home(){
                         </dl>
                     </div>
 
-                    <a href="#" className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 
-                    py-2.5 text-sm font-medium hover:bg-primary-800">Proceed to Checkout</a>
+                    <Link href="/checkout" style={{ backgroundColor:"#2563eb",color:"#fff" }} className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 
+                      py-2.5 text-sm font-medium hover:bg-primary-800">Proceed to Checkout
+                    </Link>
 
                     <div className="flex items-center justify-center gap-2">
                         <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
