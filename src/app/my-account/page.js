@@ -79,13 +79,13 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+    <div className="flex flex-col md:flex-row bg-gray-100">
       {/* Sidebar */}
       <div className="md:w-1/4 w-full bg-gray-800 text-white p-6 md:min-h-screen">
         <h2 className="text-2xl font-bold mb-6 text-center">My Account</h2>
         <ul className="space-y-4">
           <li
-            className={`p-3 flex items-center gap-2 cursor-pointer rounded-lg transition-all ${
+            className={`p-3 flex items-center gap-2 mb-8 cursor-pointer rounded-lg transition-all ${
               activeTab === "cart" ? "bg-gray-700" : "hover:bg-gray-600"
             }`}
             onClick={() => setActiveTab("cart")}
