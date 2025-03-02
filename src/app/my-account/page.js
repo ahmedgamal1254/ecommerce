@@ -85,7 +85,7 @@ const MyAccount = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">My Account</h2>
         <ul className="space-y-4">
           <li
-            className={`p-3 flex items-center gap-2 mb-8 cursor-pointer rounded-lg transition-all ${
+            className={`p-3 flex items-center gap-2 cursor-pointer rounded-lg transition-all ${
               activeTab === "cart" ? "bg-gray-700" : "hover:bg-gray-600"
             }`}
             onClick={() => setActiveTab("cart")}
@@ -164,7 +164,7 @@ const MyAccount = () => {
         )}
 
         {activeTab === "orders" && (
-          <div>
+          <div className="mt-5">
             <h2 className="text-xl font-semibold mb-4">💖 My orders</h2>
             {orders.length > 0 ? (
               orders.map((item) => (
