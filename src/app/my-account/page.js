@@ -147,7 +147,7 @@ const MyAccount = () => {
 
         {activeTab === "wishlist" && (
           <div>
-            <h2 className="text-xl font-semibold mb-4">My wishlist</h2>
+            <h2 className="text-xl font-semibold mb-4">💖 My wishlist</h2>
             {wishlist.length > 0 ? (
               <ul className="border p-4 rounded-lg">
                 {wishlist.map((item) => (
@@ -168,7 +168,7 @@ const MyAccount = () => {
             <h2 className="text-xl font-semibold mb-4">💖 My orders</h2>
             {orders.length > 0 ? (
               orders.map((item) => (
-                <OrderCard key={item.id} order={item} />
+                <OrderCard style={{marginBottom:"12px"}} key={item.id} order={item} />
               ))
             ) : (
               <p className="text-gray-600">You haven't ordered yet.</p>
