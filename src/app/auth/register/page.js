@@ -68,8 +68,14 @@ export default function Register() {
 
       router.push("/");
     } catch (error) {
-      console.error("Registration failed:", error.response?.data || error.message);
-      setErrors({ submit: "Registration failed. Please try again." });
+      if(error.status == 422){
+        let errors_data=error.response.data
+        const newErrors = { ...errors };
+        Object.keys(errors_data).forEach((key) => {
+          newErrors[key] = errors_data[key][0];
+        });
+        setErrors(newErrors);
+      }
     }
   };
 
