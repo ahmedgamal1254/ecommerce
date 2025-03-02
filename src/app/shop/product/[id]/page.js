@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useContext, useState } from "react";
 import env from "@/env";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
@@ -15,7 +15,7 @@ import { WishlistContext } from "@/WishlistContext";
 import ReviewProduct from "@/components/ReviewProduct";
 
 const ProductPage = () => {
-
+  const router=useRouter();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -146,9 +146,30 @@ const ProductPage = () => {
   setLoadingaddtowishlist(false)
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!product) return <div>Product not found</div>;
+  if (loading){
+    return (
+      <div className="p-6 max-w-lg mx-auto">
+      <div className="animate-pulse space-y-4">
+        <div className="bg-gray-300 h-48 w-full rounded-lg"></div>
+        <div className="h-6 bg-gray-300 w-3/4 rounded"></div>
+        <div className="h-4 bg-gray-300 w-1/2 rounded"></div>
+      </div>
+    </div>
+    )
+  }
+
+  if (error){
+    router.push("/shop")
+    return;
+  }
+
+  if (!product){
+    return (
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-8">product not found</h1>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto p-4">

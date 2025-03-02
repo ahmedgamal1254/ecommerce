@@ -5,12 +5,14 @@ import { WishlistContext } from "../../WishlistContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import env from "@/env";
-import { FaShoppingCart, FaHeart, FaInfoCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaShoppingCart, FaHeart, FaInfoCircle, FaSignOutAlt, FaFirstOrderAlt } from "react-icons/fa";
+import OrderCard from "@/components/order";
 
 const MyAccount = () => {
   const router = useRouter();
   const { cart, loading: cartLoading } = useContext(CartContext);
   const { wishlist, loading: wishlistLoading } = useContext(WishlistContext);
+  const [orders,setOrders]=useState([]);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [activeTab, setActiveTab] = useState("cart");
@@ -42,6 +44,35 @@ const MyAccount = () => {
     fetchProfile();
   }, []);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoadingUser(true);
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem("token_app");
+          
+          if (!token) {
+            router.push("/auth/login");
+          }
+
+          const response = await axios.get(env.baseUrl + "/my-orders", {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          setOrders(response.data.data)
+          console.log(response.data.data)
+        }
+      } catch (error) {
+        console.error("Error fetching my orders:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("token_app");
     router.push("/auth/register");
@@ -68,6 +99,14 @@ const MyAccount = () => {
             onClick={() => setActiveTab("wishlist")}
           >
             <FaHeart /> My Wishlist
+          </li>
+          <li
+            className={`p-3 flex items-center gap-2 cursor-pointer rounded-lg transition-all ${
+              activeTab === "orders" ? "bg-gray-700" : "hover:bg-gray-600"
+            }`}
+            onClick={() => setActiveTab("orders")}
+          >
+            <FaFirstOrderAlt /> My Orders
           </li>
           <li
             className={`p-3 flex items-center gap-2 cursor-pointer rounded-lg transition-all ${
@@ -108,7 +147,7 @@ const MyAccount = () => {
 
         {activeTab === "wishlist" && (
           <div>
-            <h2 className="text-xl font-semibold mb-4">💖 My Wishlist</h2>
+            <h2 className="text-xl font-semibold mb-4">My wishlist</h2>
             {wishlist.length > 0 ? (
               <ul className="border p-4 rounded-lg">
                 {wishlist.map((item) => (
@@ -120,6 +159,19 @@ const MyAccount = () => {
               </ul>
             ) : (
               <p className="text-gray-600">Your wishlist is empty.</p>
+            )}
+          </div>
+        )}
+
+        {activeTab === "orders" && (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">💖 My orders</h2>
+            {orders.length > 0 ? (
+              orders.map((item) => (
+                <OrderCard key={item.id} order={item} />
+              ))
+            ) : (
+              <p className="text-gray-600">You haven't ordered yet.</p>
             )}
           </div>
         )}
