@@ -52,9 +52,6 @@ const HeroSlider = () => {
           <div key={index}>
             <motion.div
               key={currentSlide} // Force re-render on slide change
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               style={{
                 backgroundImage: `url(${slide.image})`,
                 height: "600px",
