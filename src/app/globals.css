@@ -121,3 +121,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.max-w-6xl {
+  max-width: 90rem;
+}
+
+.padding-categories{
+  padding: 17px;
+}

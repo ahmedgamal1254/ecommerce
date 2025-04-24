@@ -30,7 +30,7 @@ const FeaturesAndAbout = () => {
         </div>
   
         {/* ℹ️ About Us Section */}
-        <div className="mt-12 bg-gray-100 p-6 rounded-lg shadow flex flex-col md:flex-row items-center">
+        {/* <div className="mt-12 bg-gray-100 p-6 rounded-lg shadow flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 p-4">
             <h2 className="text-3xl font-bold mb-4">About Us</h2>
             <p className="text-gray-600">
@@ -51,7 +51,7 @@ const FeaturesAndAbout = () => {
               className="rounded-lg shadow-lg w-full"
             />
           </div>
-        </div>
+        </div> */}
   
       </div>
     );

@@ -1,15 +1,22 @@
 "use client";
-import Navbar from "@/components/Navbar";
 import env from "@/env";
+import { LoginSchema } from "@/validation/loginSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
 export default function Login() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
+
+  const {register,reset,handleSubmit,formState:{errors,isValid}} = useForm({
+    resolver:yupResolver(LoginSchema),
+    mode:"onChange"
+  });
+  
+  const [errorsServer, setErrorsServer] = useState({});
   const [loading,setLoading] = useState(false)
 
   if (typeof window !== "undefined") {
@@ -20,30 +27,11 @@ export default function Login() {
     }
   }
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email address is invalid";
-    }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
+  const Submit = async (data) => {
     try {
       setLoading(true)
-      const res = await axios.post(env.baseUrl+"/login", formData, {
+      const res = await axios.post(env.baseUrl+"/login", data, {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
       });
 
@@ -66,7 +54,7 @@ export default function Login() {
     } catch (error) {
       setLoading(false)
       if(error.status == 422){
-        setErrors({})
+        setErrorsServer({})
         let errors_data=error.response.data
         const newErrors = { ...errors };
 
@@ -74,14 +62,9 @@ export default function Login() {
           newErrors[key] = errors_data[key][0];
         });
 
-        setErrors(newErrors);
+        setErrorsServer(newErrors);
       }
     }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
   };
 
   return (
@@ -89,33 +72,38 @@ export default function Login() {
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
           <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(Submit)} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email")}
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
-              {errors.email && <span className="text-sm text-red-500">{errors.email}</span>}
+              {errors.email && <span className="text-sm text-red-500">{errors.email.email}</span>}
+              {errorsServer.email && <span className="text-sm text-red-500">{errorsServer.email}</span>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">Password</label>
               <input
                 type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
+                {...register("password")}
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
-              {errors.password && <span className="text-sm text-red-500">{errors.password}</span>}
+              {errors.password && <span className="text-sm text-red-500">{errors.password.message}</span>}
+              {errorsServer.password && <span className="text-sm text-red-500">{errorsServer.password}</span>}
             </div>
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
+              disabled={!isValid}
+              className={`w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700
+                ${
+                  isValid 
+                  ? "bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    : "bg-blue-600 opacity-50 cursor-not-allowed"
+                }
+                `}
             >
               Login
               {loading ? (<svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FaShoppingCart, FaHeart } from 'react-icons/fa';
+import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -12,6 +13,7 @@ import { CartContext } from '@/CartContext';
 import { WishlistContext } from '@/WishlistContext';
 import env from '@/env';
 import Link from 'next/link';
+import { getRandomInRange } from '@/lib/helper';
 
 const ProductCard = ({ product }) => {
   const { cart, setCart } = useContext(CartContext);
@@ -85,66 +87,69 @@ const ProductCard = ({ product }) => {
   };
 
   const handleaddtowishlist = async (product_id) => {
-    setLoadingaddtowishlist(true)
-   if(localStorage.getItem("token_app") != null){
-    await axios.post(env.baseUrl+"/wishlist/store", {
-      "product_id": product_id,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem("token_app")}`
-      },
-    });
+      setLoadingaddtowishlist(true)
+    if(localStorage.getItem("token_app") != null){
+      await axios.post(env.baseUrl+"/wishlist/store", {
+        "product_id": product_id,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+        },
+      });
 
-    fetchWishlist();
-    Swal.fire({
-      title: 'Success',
-      text: 'تم اضافة المنتج للمفضلة بنجاح',
-      icon: 'success',
-      timer: 1500,
-      confirmButtonText: 'إغلاق'
-    });
-   }else{
-    Swal.fire({
-      title: 'error',
-      text: 'أنت عير مسجل دخول بعد',
-      icon: 'error',
-      timer: 1500,
-      confirmButtonText: 'إغلاق'
-    });
+      fetchWishlist();
+      Swal.fire({
+        title: 'Success',
+        text: 'تم اضافة المنتج للمفضلة بنجاح',
+        icon: 'success',
+        timer: 1500,
+        confirmButtonText: 'إغلاق'
+      });
+    }else{
+      Swal.fire({
+        title: 'error',
+        text: 'أنت عير مسجل دخول بعد',
+        icon: 'error',
+        timer: 1500,
+        confirmButtonText: 'إغلاق'
+      });
+    }
   }
 
-  setLoadingaddtowishlist(false)
-  };
-
   const { id, title, price, salePrice, gallery } = product;
+  const [srcImage,setSrcImage]=useState(gallery.length > 0 ?gallery[0]:'')
+
+  const changeImage=(src) => {
+    setSrcImage(src)
+  }
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       {/* Image Swiper */}
-      <div className="relative h-48">
+      <div className="relative h-96">
         {gallery != null && gallery.length > 0 ? (
-          <Swiper
-            modules={[Pagination, Navigation, Autoplay]}
-            navigation
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 3000 }}
-            className="h-full"
-          >
-            {gallery.map((image, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={image}
-                  alt={`${title} - Image ${index + 1}`}
-                  className="hover:scale-105 transition-transform duration-300"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        ) : (
-          <img src="./about.webp" className='img-product' alt="Placeholder" />
-        )}
+          <motion.img
+              src={srcImage}
+              alt={title}
+              className="h-full w-full object-contain"
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.15 }}
+              transition={{ duration: 0.3 }}
+              onMouseOver={() => changeImage(gallery[getRandomInRange(1,gallery.length-1)])}
+              onMouseOut={() => changeImage(gallery[0])}
+              />
+          ) : (
+            <motion.img
+              src="./about.webp"
+              alt="Placeholder"
+              className="img-product"
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
       </div>
 
       {/* Product Details */}

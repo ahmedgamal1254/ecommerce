@@ -38,41 +38,40 @@ export default function Home(){
     };
 
     const fetchWishlist = async () => {
-        try {
-          const response = await axios.get(env.baseUrl+"/wishlist", {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token_app")}`
-            }
-          });
-          setWishlist(response.data.data);
-        } catch (error) {
-          console.error("Error fetching wishlist:", error);
-        }
-      };
+      try {
+        const response = await axios.get(env.baseUrl+"/wishlist", {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          }
+        });
+        setWishlist(response.data.data);
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+      }
+    };
 
     const removeitem = async (product_id) => {
-        console.log("Clicked remove for product:", product_id);
-        try {
-          await axios.get(env.baseUrl+`/cart/destroy/${product_id}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token_app")}`
-            },
-          });
-          fetchCart();
-          Swal.fire({
-            title: 'Success',
-            text: 'تم حذف المنتج بنجاح',
-            icon: 'success',
-            timer: 1500,
-            confirmButtonText: 'إغلاق'
-          });
-        } catch (error) {
-          console.error("Error removing item:", error);
-        }
+      try {
+        await axios.get(env.baseUrl+`/cart/destroy/${product_id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          },
+        });
+        fetchCart();
+        Swal.fire({
+          title: 'Success',
+          text: 'تم حذف المنتج بنجاح',
+          icon: 'success',
+          timer: 1500,
+          confirmButtonText: 'إغلاق'
+        });
+      } catch (error) {
+        console.error("Error removing item:", error);
+      }
     };
 
     const handleaddtowishlist = async (product_id) => {
