@@ -31,6 +31,18 @@ const fadeUp = {
   transition: { duration: 0.8, ease: "easeInOut" },
 };
 
+const fadeDown = {
+  initial: { y: -200, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { duration: 0.8, ease: "easeInOut" },
+};
+
+const fadeLeft = {
+  initial: { x: -200, opacity: 0 },
+  animate: { x: 0, opacity: 1 },
+  transition: { duration: 0.8, ease: "easeInOut" },
+};
+
 const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -72,7 +84,7 @@ const HeroSlider = () => {
               <motion.p className="text-xl mb-8" {...fadeUp}>
                 {slide.text}
               </motion.p>
-              <motion.div {...fadeUp}>
+              <motion.div {...fadeDown}>
                 <Button type="primary" size="large">
                   {slide.button}
                 </Button>

@@ -6,7 +6,7 @@ const FeaturesAndAbout = () => {
       <div className="container mx-auto px-6 lg:px-20 my-10">
         
         {/* 🛍 Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 bg-gray-100 p-6 rounded-lg shadow">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 bg-white p-6 rounded-lg">
           <FeatureItem
             icon="🚚"
             title="Free Delivery"
@@ -21,6 +21,11 @@ const FeaturesAndAbout = () => {
             icon="🎟️"
             title="Member Discount"
             description="On every order over 5000.00 EGP"
+          />
+          <FeatureItem
+            icon="🎧"
+            title="Support 24/7"
+            description="Contact us 24 hours a day"
           />
           <FeatureItem
             icon="🎧"

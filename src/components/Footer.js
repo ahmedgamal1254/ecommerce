@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
@@ -8,6 +9,9 @@ const Footer = () => {
             
             {/* 🏪 About Section */}
             <div>
+              <div className="bg-white rounded-xl w-64 p-5 mb-5">
+                <Image src={"/logo.png"} width={200} height={200} />
+              </div>
               <h2 className="text-xl font-semibold mb-4">About Us</h2>
               <p className="text-gray-400">
                 We are an online store providing the best products with high quality and fast delivery.
