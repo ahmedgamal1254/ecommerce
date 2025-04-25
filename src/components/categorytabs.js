@@ -4,6 +4,7 @@ import axios from "axios";
 import classNames from "classnames";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import Link from "next/link";
 
 const baseImageUrl = "https://ecommerce.ahmedgamaldev.com/public/app/";
 
@@ -67,11 +68,13 @@ const CategoryTabs = () => {
               }
             )}
           >
-            <img
-              src={`${baseImageUrl}${cat.image}`}
-              alt={cat.title}
-              className="w-full h-30 object-contain mx-auto mb-2"
-            />
+            <Link href={`/shop/category/${cat.slug}`}>
+              <img
+                src={`${baseImageUrl}${cat.image}`}
+                alt={cat.title}
+                className="w-full h-30 object-contain mx-auto mb-2"
+              />
+            </Link>
             {index === activeIndex && (
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-yellow-400" />
             )}

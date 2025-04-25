@@ -1,8 +1,5 @@
-import Image from 'next/image';
 import { FaShoppingCart, FaHeart } from 'react-icons/fa';
 import { motion } from "framer-motion";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -119,7 +116,7 @@ const ProductCard = ({ product }) => {
   }
 
   const { id, title, price, salePrice, gallery } = product;
-  const [srcImage,setSrcImage]=useState(gallery.length > 0 ?gallery[0]:'')
+  const [srcImage,setSrcImage]=useState(gallery && gallery.length > 0 ?gallery[0]:'')
 
   const changeImage=(src) => {
     setSrcImage(src)
@@ -129,10 +126,9 @@ const ProductCard = ({ product }) => {
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       {/* Image Swiper */}
       <div className="relative h-96">
-        {gallery != null && gallery.length > 0 ? (
+        {gallery && gallery.length > 0 ? (
           <motion.img
               src={srcImage}
-              alt={title}
               className="h-full w-full object-contain"
               initial={{ scale: 1 }}
               whileHover={{ scale: 1.15 }}
@@ -143,7 +139,6 @@ const ProductCard = ({ product }) => {
           ) : (
             <motion.img
               src="./about.webp"
-              alt="Placeholder"
               className="img-product"
               initial={{ scale: 1 }}
               whileHover={{ scale: 1.05 }}
