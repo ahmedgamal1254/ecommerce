@@ -135,34 +135,6 @@ const Navbar = () => {
                   <span className="block text-gray-800 hover:bg-blue-600 hover:text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer">Register</span>
                 </Link>
               )}
-
-              <div className="">
-                {
-                  typeof window !== "undefined" && localStorage.getItem("token_app") ? (<MyAccount />):(<Register />)
-                }
-              </div>
-
-              <div className="flex">
-                {/* Wishlist Button */}
-                <button onClick={() => openSidebar("wishlist")} className="relative text-gray-800 hover:text-gray-600 focus:outline-none">
-                  <FaHeart className="w-6 h-6 text-blue-500" />
-                  {(
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
-                      {wishlist.length}
-                    </span>
-                  )}
-                </button>
-
-                {/* Cart Button */}
-                <button onClick={() => openSidebar("cart")} className="relative text-gray-800 hover:text-gray-600 focus:outline-none">
-                  <FaShoppingBag className="w-6 h-6 text-blue-500" />
-                  {
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
-                      {cart.length}
-                    </span>
-                  }
-                </button>
-              </div>
             </div>
           </div>
         </div>

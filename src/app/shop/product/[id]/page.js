@@ -13,6 +13,7 @@ import axios from "axios";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import ReviewProduct from "@/components/ReviewProduct";
+import Image from "next/image";
 
 const ProductPage = () => {
   const router=useRouter();
@@ -31,7 +32,6 @@ const ProductPage = () => {
   const [ loadingaddtowishlist,setLoadingaddtowishlist ]=useState(false);
 
   useEffect(() => {
-
 
     const fetchProduct = async () => {
       try {
@@ -173,7 +173,6 @@ const ProductPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-8">{product.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* ✅ Swiper Gallery */}
         <div className="relative">
@@ -188,11 +187,13 @@ const ProductPage = () => {
               className="rounded-lg"
             >
               {product.gallery.map((image, index) => (
-                <SwiperSlide key={index}>
+                <SwiperSlide key={index} className="max-h-600">
                   <img
+                    height={600}
+                    width={600}
                     src={`${env.base}/public/app/${image.image_url}`}
                     alt={`Product ${index + 1}`}
-                    className="w-full h-auto rounded-lg"
+                    className="w-full max-h-600 rounded-lg"
                   />
                 </SwiperSlide>
               ))}
@@ -208,20 +209,21 @@ const ProductPage = () => {
 
         {/* ✅ Product Details */}
         <div className="space-y-4">
-          <img src={`${env.base}/public/app/${product.image}`} />
-          <div dangerouslySetInnerHTML={{ __html: product.long_description }} />
-          <div className="flex items-center gap-2">
+          {/* <img src={`${env.base}/public/app/${product.image}`} /> */}
+          <h1 className="text-3xl text-right font-bold mb-8">{product.title}</h1>
+          <div className="text-right" dangerouslySetInnerHTML={{ __html: product.long_description }} />
+          <div className="flex items-center flex-row-reverse gap-2">
             {product.sale_price ? (
               <>
-                <span className="text-2xl font-bold text-gray-800">
+                <span className="text-2xl text-right font-bold text-gray-800">
                   ${product.sale_price}
                 </span>
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-sm text-right text-gray-500 line-through">
                   ${product.price}
                 </span>
               </>
             ) : (
-              <span className="text-2xl font-bold text-gray-800">
+              <span className="text-2xl text-right font-bold text-gray-800">
                 ${product.price}
               </span>
             )}
@@ -229,7 +231,7 @@ const ProductPage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleaddtocart(product.id)}
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex-1"
+              className="flex items-center  justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex-1"
             >
               <FaShoppingCart className="w-5 h-5" />
               <span>Add to Cart</span>
