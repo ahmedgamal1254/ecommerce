@@ -1,17 +1,28 @@
-
+"use client"
 import { FaBars, FaWhatsapp } from 'react-icons/fa';
 import { AiOutlineSearch } from 'react-icons/ai';
+import CatDropdown from '../dropdown/categories';
+import CategoriesDropdown from '../dropdown/categories';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const BelowHeader=() => {
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+    axios
+        .get("https://ecommerce.ahmedgamaldev.com/api/parent-categories")
+        .then((res) => {
+        if (res.data?.status === 200) {
+            setCategories(res.data.data);
+        }
+        });
+    }, []);
+    
     return (
         <>
             <div className="max-w-6xl mb-2 mx-auto px-4 hidden md:flex items-center justify-between bg-white py-2 rounded-lg mt-4 ">
-            
-                {/* Left: Categories Button */}
-                <button className="w-60 padding-categories flex items-center justify-center gap-8 p-2 bg-indigo-600 text-white font-semibold px-4 py-2 rounded-md">
-                    <span className="mr-2">جميع الفئات</span>
-                    <FaBars />
-                </button>
+                <CategoriesDropdown />
 
                 {/* Center: Search */}
                 <div className="flex flex-1 mx-4 p-2 bg-gray-100 rounded-md overflow-hidden">
@@ -21,9 +32,17 @@ const BelowHeader=() => {
                     className="flex-grow px-4 py-2 bg-gray-100 focus:outline-none text-gray-700"
                     />
                     <select className="px-4 bg-gray-100 text-gray-700 border-l border-gray-300">
-                        <option>الإلكترونيات</option>
-                        <option>الملابس</option>
-                        <option>الألعاب</option>
+                        {
+                            categories && categories.length > 0 ? (
+                                categories.map((item, idx) => (
+                                <option key={idx} value={item.id}>
+                                    {item.title}
+                                </option>
+                                ))
+                            ) : (
+                                ""
+                            )
+                        }
                     </select>
                     <button className="bg-indigo-600 text-white px-4 py-2 rounded-xl flex items-center gap-1">
                         <AiOutlineSearch />

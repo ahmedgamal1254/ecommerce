@@ -2,16 +2,19 @@ import React from 'react';
 import { DownOutlined, SettingOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
 import { FaUser, FaUserAlt, FaUserAltSlash, FaUserCircle } from 'react-icons/fa';
+import Link from 'next/link';
 const items = [
   {
     key: '1',
-    label: 'Register',
-    path: '/auth/register'
+    label: (<Link href={"/auth/register"}>
+      MyAccount
+    </Link>),
   },
   {
     key: '3',
-    label: 'Login',
-    path: '/auth/login'
+    label: (<Link href={"/auth/login"}>
+      MyAccount
+    </Link>),
   },
 ];
 const Register = () => (

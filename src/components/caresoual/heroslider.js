@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Carousel, Button } from "antd";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const slides = [
   {
@@ -10,18 +11,21 @@ const slides = [
     title: "مرحبًا بكم في متجرنا",
     text: "أفضل المنتجات بين يديك",
     button: "تسوق الآن",
+    path:"/shop"
   },
   {
     image: "/slider/img2.webp",
     title: "اكتشف مجموعاتنا الجديدة",
     text: "تحديثات يومية وعروض مميزة",
     button: "استعرض المنتجات",
+    path:"/shop"
   },
   {
     image: "/slider/img1.webp",
     title: "توصيل سريع وآمن",
     text: "من الباب إلى الباب في وقت قياسي",
     button: "تعرف أكثر",
+    path:"/about"
   },
 ];
 
@@ -85,9 +89,9 @@ const HeroSlider = () => {
                 {slide.text}
               </motion.p>
               <motion.div {...fadeDown}>
-                <Button type="primary" size="large">
+                <Link href={slide.path} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" size="large">
                   {slide.button}
-                </Button>
+                </Link>
               </motion.div>
             </motion.div>
           </div>

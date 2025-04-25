@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/CartContext";
-
+import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
 import { WishlistProvider } from "@/WishlistContext";
 import Footer from "@/components/Footer";
@@ -32,6 +32,7 @@ export default function RootLayout({ children }) {
         <CartProvider>
           <WishlistProvider>
             <ProductsProvider>
+              <NextTopLoader />
               <Navbar />
               <BelowHeader />
               {children}
