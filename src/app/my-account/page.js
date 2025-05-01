@@ -7,6 +7,7 @@ import axios from "axios";
 import env from "@/env";
 import { FaShoppingCart, FaHeart, FaInfoCircle, FaSignOutAlt, FaFirstOrderAlt } from "react-icons/fa";
 import OrderCard from "@/components/order";
+import { getToken, removeToken } from "@/lib/helper";
 
 const MyAccount = () => {
   const router = useRouter();
@@ -21,8 +22,7 @@ const MyAccount = () => {
     const fetchProfile = async () => {
       try {
         setLoadingUser(true);
-        if (typeof window !== "undefined") {
-          const token = localStorage.getItem("token_app");
+          const token = getToken("token_app");
           if (!token) {
             router.push("/auth/login");
           }
@@ -34,7 +34,6 @@ const MyAccount = () => {
             },
           });
           setUser(response.data.data);
-        }
       } catch (error) {
         console.error("Error fetching PROFILE:", error);
       } finally {
@@ -48,8 +47,7 @@ const MyAccount = () => {
     const fetchProfile = async () => {
       try {
         setLoadingUser(true);
-        if (typeof window !== "undefined") {
-          const token = localStorage.getItem("token_app");
+          const token = getToken("token_app");
           
           if (!token) {
             router.push("/auth/login");
@@ -65,7 +63,6 @@ const MyAccount = () => {
 
           setOrders(response.data.data)
           console.log(response.data.data)
-        }
       } catch (error) {
         console.error("Error fetching my orders:", error);
       }
@@ -74,7 +71,7 @@ const MyAccount = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token_app");
+    removeToken("token_app");
     router.push("/auth/register");
   };
 

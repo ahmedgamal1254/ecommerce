@@ -7,16 +7,13 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisterSchema } from "@/validation/registerSchema";
+import { getToken, setToken } from "@/lib/helper";
 
 export default function Register() {
   const router = useRouter();
 
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token_app");
-
-    if (token) {
-      router.push("/my-account")          
-    }
+  if (getToken("token_app")) {
+    router.push("/my-account")          
   }
 
   const { reset,register,handleSubmit,formState: {errors,isValid} } = useForm({
@@ -33,11 +30,8 @@ export default function Register() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
       });
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token_app", res.data.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.data.user));
-      }
-
+      setToken("token_app", res.data.data.token);
+      setToken("user", JSON.stringify(res.data.data.user));
 
       Swal.fire({
         title: "Success",

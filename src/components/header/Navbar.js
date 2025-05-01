@@ -8,6 +8,7 @@ import { WishlistContext } from "@/WishlistContext";
 import Image from "next/image";
 import MyAccount from "../dropdown/myaccount";
 import Register from "../dropdown/register";
+import { getToken } from "@/lib/helper";
 
 const Navbar = () => {
   const { cart } = useContext(CartContext);
@@ -55,7 +56,7 @@ const Navbar = () => {
               <Link href="/contact-us">
                 <span className="text-gray-800 hover:bg-blue-600 hover:text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer">Contact Us</span>
               </Link>
-              {typeof window !== "undefined" && localStorage.getItem("token_app") !== null ? (
+              {getToken("token_app") !== null ? (
                 <Link href="/my-account">
                   <span className="text-gray-800 hover:bg-blue-600 hover:text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer">My Account</span>
                 </Link>
@@ -71,7 +72,7 @@ const Navbar = () => {
             <div className="flex items-center space-x-4">
               <div className="hidden lg:block">
                 {
-                  typeof window !== "undefined" && localStorage.getItem("token_app") ? (<MyAccount />):(<Register />)
+                  getToken("token_app") ? (<MyAccount />):(<Register />)
                 }
               </div>
 
@@ -126,7 +127,7 @@ const Navbar = () => {
               <Link href="/contact-us">
                 <span className="block text-gray-800 hover:bg-blue-600 hover:text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer">Contact Us</span>
               </Link>
-              {typeof window !== "undefined" && localStorage.getItem("token_app") !== null ? (
+              { getToken("token_app") !== null ? (
                 <Link href="/my-account">
                   <span className="block text-gray-800 hover:bg-blue-600 hover:text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer">My Account</span>
                 </Link>

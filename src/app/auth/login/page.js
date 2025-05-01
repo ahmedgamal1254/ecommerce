@@ -1,5 +1,6 @@
 "use client";
 import env from "@/env";
+import { getToken, setToken } from "@/lib/helper";
 import { LoginSchema } from "@/validation/loginSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
@@ -19,13 +20,10 @@ export default function Login() {
   const [errorsServer, setErrorsServer] = useState({});
   const [loading,setLoading] = useState(false)
 
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token_app");
     
-    if (token) {
+    if (getToken("token_app")) {
       router.push("/my-account")          
     }
-  }
 
 
   const Submit = async (data) => {
@@ -35,10 +33,8 @@ export default function Login() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
       });
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token_app", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-      }
+      setToken("token_app", res.data.token)
+      setToken("user", JSON.stringify(res.data.user))
 
       setLoading(false)
 

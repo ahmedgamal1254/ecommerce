@@ -7,6 +7,7 @@ import { WishlistContext } from '@/WishlistContext';
 import axios from "axios";
 import Swal from "sweetalert2";
 import env from "../../env";
+import { getToken } from "@/lib/helper";
 
 export default function Home(){
     const { cart,setCart } = useContext(CartContext);
@@ -28,7 +29,7 @@ export default function Home(){
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+                'Authorization': `Bearer ${getToken("token_app")}`
             }
             });
             setCart(response.data.data);
@@ -43,7 +44,7 @@ export default function Home(){
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+            'Authorization': `Bearer ${getToken("token_app")}`
           }
         });
         setWishlist(response.data.data);
@@ -58,7 +59,7 @@ export default function Home(){
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+            'Authorization': `Bearer ${getToken("token_app")}`
           },
         });
         fetchCart();
@@ -81,7 +82,7 @@ export default function Home(){
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+            'Authorization': `Bearer ${getToken("token_app")}`
           },
         });
     
@@ -101,7 +102,7 @@ export default function Home(){
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+              'Authorization': `Bearer ${getToken("token_app")}`
             },
           });
           fetchCart();
@@ -124,7 +125,7 @@ export default function Home(){
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+              'Authorization': `Bearer ${getToken("token_app")}`
             },
           });
           fetchCart();

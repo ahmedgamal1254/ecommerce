@@ -14,25 +14,29 @@ import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import ReviewProduct from "@/components/ReviewProduct";
 import Image from "next/image";
+import { getToken } from "@/lib/helper";
 
 const ProductPage = () => {
   const router=useRouter();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const params = useParams(); // 🚀 params is now a Promise
+  const params = useParams();
   const id=params.id
-  console.log(params.id)
-
-
   const { cart, setCart } = useContext(CartContext);
   const { wishlist, setWishlist } = useContext(WishlistContext);
   const [ loadingaddtocat,setLoadingaddtocat ]=useState(false);
   const [ loadingaddtowishlist,setLoadingaddtowishlist ]=useState(false);
-
+  const defaultAttr = product && product.attributes_value && product.attributes_value.length > 0 ? product.attributes_value[0] : null;
+  const [selectedAttr, setSelectedAttr] = useState(defaultAttr);
+  const [srcImage, setSrcImage] = useState(defaultAttr?.image
+    ? `https://ecommerce.ahmedgamaldev.com/public/app/${defaultAttr.image}`
+    : (product && product.gallery && product.gallery[0])
+      ? `${product.gallery[0]}`
+      : ''
+  );
+  
   useEffect(() => {
-
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`${env.baseUrl}/product/${id}`);
@@ -53,7 +57,7 @@ const ProductPage = () => {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         }
       });
       setCart(response.data.data);
@@ -68,7 +72,7 @@ const ProductPage = () => {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         }
       });
       setWishlist(response.data.data);
@@ -79,7 +83,7 @@ const ProductPage = () => {
 
   const handleaddtocart = async (product_id) => {
     setLoadingaddtocat(true)
-    if(localStorage.getItem("token_app") != null){
+    if(getToken("token_app") != undefined){
       await axios.post(env.baseUrl+"/cart/store", {
         "product_id": product_id,
         "quantity": 1
@@ -87,7 +91,7 @@ const ProductPage = () => {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         },
       });
   
@@ -114,14 +118,14 @@ const ProductPage = () => {
 
   const handleaddtowishlist = async (product_id) => {
     setLoadingaddtowishlist(true)
-   if(localStorage.getItem("token_app") != null){
+   if(getToken("token_app") != undefined){
     await axios.post(env.baseUrl+"/wishlist/store", {
       "product_id": product_id,
     }, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+        'Authorization': `Bearer ${getToken("token_app")}`
       },
     });
 
@@ -145,6 +149,38 @@ const ProductPage = () => {
 
   setLoadingaddtowishlist(false)
   };
+  
+  const changeImage = (src) => {
+    setSrcImage(src);
+  };
+
+  const [selectedAttributes, setSelectedAttributes] = useState({});
+  const [selectedVariant, setSelectedVariant] = useState(null);
+
+  useEffect(() => {
+    const match = product && product.attributes_value?.find(attr => {
+      return Object.entries(selectedAttributes).every(([key, val]) => attr[key] === val);
+    });
+    if (match) setSelectedVariant(match);
+  }, [selectedAttributes]);
+
+  const handleAttributeChange = (key, value) => {
+    setSelectedAttributes(prev => ({ ...prev, [key]: value }));
+  };
+
+  const excludedKeys = ['price', 'image'];
+  const groupedAttributes = {};
+
+  if (Array.isArray(product && product.attributes_value)) {
+    product.attributes_value.forEach(attr => {
+      Object.entries(attr).forEach(([key, value]) => {
+        if (!excludedKeys.includes(key)) {
+          if (!groupedAttributes[key]) groupedAttributes[key] = new Set();
+          groupedAttributes[key].add(value);
+        }
+      });
+    });
+  }
 
   if (loading){
     return (
@@ -191,7 +227,10 @@ const ProductPage = () => {
                   <img
                     height={600}
                     width={600}
-                    src={`${env.base}/public/app/${image.image_url}`}
+                    src={selectedVariant?.image
+              ? `https://ecommerce.ahmedgamaldev.com/public/app/${selectedVariant.image}`
+              : image || './about.webp'}
+                    
                     alt={`Product ${index + 1}`}
                     className="w-full max-h-600 rounded-lg"
                   />
@@ -216,18 +255,44 @@ const ProductPage = () => {
             {product.sale_price ? (
               <>
                 <span className="text-2xl text-right font-bold text-gray-800">
-                  ${product.sale_price}
+                ${selectedVariant?.price || product.sale_price}
                 </span>
                 <span className="text-sm text-right text-gray-500 line-through">
-                  ${product.price}
+                  ${selectedVariant?.price || product.price}
                 </span>
               </>
             ) : (
               <span className="text-2xl text-right font-bold text-gray-800">
-                ${product.price}
+                ${selectedVariant?.price || product.price}
               </span>
             )}
           </div>
+
+        {product && product.attributes_value?.length > 0 && (
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(groupedAttributes).map(([key, values]) => (
+                <div key={key}>
+                  <h4 className="font-semibold mb-1 capitalize">{key}:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {[...values].map((val, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleAttributeChange(key, val)}
+                        className={`px-3 py-1 border rounded text-sm capitalize ${
+                          selectedAttributes[key] === val ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                        }`}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleaddtocart(product.id)}

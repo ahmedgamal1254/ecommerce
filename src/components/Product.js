@@ -1,3 +1,4 @@
+"use client"
 import { FaShoppingCart, FaHeart } from 'react-icons/fa';
 import { motion } from "framer-motion";
 import 'swiper/css';
@@ -5,26 +6,36 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { use, useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { CartContext } from '@/CartContext';
 import { WishlistContext } from '@/WishlistContext';
 import env from '@/env';
 import Link from 'next/link';
-import { getRandomInRange } from '@/lib/helper';
+import { getRandomInRange, getToken } from '@/lib/helper';
 
 const ProductCard = ({ product }) => {
   const { cart, setCart } = useContext(CartContext);
   const { wishlist, setWishlist } = useContext(WishlistContext);
-  const [ loadingaddtocat,setLoadingaddtocat ]=useState(false);
-  const [ loadingaddtowishlist,setLoadingaddtowishlist ]=useState(false);
+  const [loadingaddtocat, setLoadingaddtocat] = useState(false);
+  const [loadingaddtowishlist, setLoadingaddtowishlist] = useState(false);
+
+  const { id, title, price, salePrice, gallery, attributes_value } = product;
+  const defaultAttr = attributes_value && attributes_value.length > 0 ? attributes_value[0] : null;
+  const [selectedAttr, setSelectedAttr] = useState(defaultAttr);
+  const [srcImage, setSrcImage] = useState(defaultAttr?.image
+    ? `https://ecommerce.ahmedgamaldev.com/public/app/${defaultAttr.image}`
+    : (gallery && gallery[0])
+      ? `${gallery[0]}`
+      : ''
+  );
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get(env.baseUrl+"/cart", {
+      const response = await axios.get(env.baseUrl + "/cart", {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         }
       });
       setCart(response.data.data);
@@ -35,11 +46,11 @@ const ProductCard = ({ product }) => {
 
   const fetchWishlist = async () => {
     try {
-      const response = await axios.get(env.baseUrl+"/wishlist", {
+      const response = await axios.get(env.baseUrl + "/wishlist", {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         }
       });
       setWishlist(response.data.data);
@@ -49,19 +60,20 @@ const ProductCard = ({ product }) => {
   };
 
   const handleaddtocart = async (product_id) => {
-    setLoadingaddtocat(true)
-    if(localStorage.getItem("token_app") != null){
-      await axios.post(env.baseUrl+"/cart/store", {
-        "product_id": product_id,
-        "quantity": 1
+    setLoadingaddtocat(true);
+    if (getToken("token_app") != null) {
+      await axios.post(env.baseUrl + "/cart/store", {
+        product_id: product_id,
+        quantity: 1,
+        attribute_value: selectedAttr?.sizes
       }, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         },
       });
-  
+
       fetchCart();
       Swal.fire({
         title: 'Success',
@@ -70,32 +82,32 @@ const ProductCard = ({ product }) => {
         timer: 1500,
         confirmButtonText: 'إغلاق'
       });
-    }else{
+    } else {
       Swal.fire({
-        title: 'error',
-        text: 'أنت عير مسجل دخول بعد',
+        title: 'Error',
+        text: 'أنت غير مسجل دخول بعد',
         icon: 'error',
         timer: 1500,
         confirmButtonText: 'إغلاق'
       });
     }
-
-    setLoadingaddtocat(false)
+    setLoadingaddtocat(false);
   };
 
   const handleaddtowishlist = async (product_id) => {
-      setLoadingaddtowishlist(true)
-    if(localStorage.getItem("token_app") != null){
-      await axios.post(env.baseUrl+"/wishlist/store", {
-        "product_id": product_id,
+    setLoadingaddtowishlist(true);
+    if (getToken("token_app") != undefined) {
+      await axios.post(env.baseUrl + "/wishlist/store", {
+        product_id: product_id,
       }, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+          'Authorization': `Bearer ${getToken("token_app")}`
         },
       });
 
+      setLoadingaddtowishlist(false);
       fetchWishlist();
       Swal.fire({
         title: 'Success',
@@ -104,90 +116,156 @@ const ProductCard = ({ product }) => {
         timer: 1500,
         confirmButtonText: 'إغلاق'
       });
-    }else{
+    } else {
       Swal.fire({
-        title: 'error',
-        text: 'أنت عير مسجل دخول بعد',
+        title: 'Error',
+        text: 'أنت غير مسجل دخول بعد',
         icon: 'error',
         timer: 1500,
         confirmButtonText: 'إغلاق'
       });
     }
-  }
+  };
 
-  const { id, title, price, salePrice, gallery } = product;
-  const [srcImage,setSrcImage]=useState(gallery && gallery.length > 0 ?gallery[0]:'')
+  const changeImage = (src) => {
+    setSrcImage(src);
+  };
 
-  const changeImage=(src) => {
-    setSrcImage(src)
+  const [selectedAttributes, setSelectedAttributes] = useState({});
+  const [selectedVariant, setSelectedVariant] = useState(null);
+
+  useEffect(() => {
+    const match = attributes_value?.find(attr => {
+      return Object.entries(selectedAttributes).every(([key, val]) => attr[key] === val);
+    });
+    if (match) setSelectedVariant(match);
+  }, [selectedAttributes]);
+
+  const handleAttributeChange = (key, value) => {
+    setSelectedAttributes(prev => ({ ...prev, [key]: value }));
+  };
+
+  const excludedKeys = ['price', 'image'];
+  const groupedAttributes = {};
+
+  if (Array.isArray(attributes_value)) {
+    attributes_value.forEach(attr => {
+      Object.entries(attr).forEach(([key, value]) => {
+        if (!excludedKeys.includes(key)) {
+          if (!groupedAttributes[key]) groupedAttributes[key] = new Set();
+          groupedAttributes[key].add(value);
+        }
+      });
+    });
   }
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-      {/* Image Swiper */}
+      {/* Image Section */}
       <div className="relative h-96">
-        {gallery && gallery.length > 0 ? (
-          <motion.img
-              src={srcImage}
-              className="h-full w-full object-contain"
-              initial={{ scale: 1 }}
-              whileHover={{ scale: 1.15 }}
-              transition={{ duration: 0.3 }}
-              onMouseOver={() => changeImage(gallery[getRandomInRange(1,gallery.length-1)])}
-              onMouseOut={() => changeImage(gallery[0])}
-              />
-          ) : (
-            <motion.img
-              src="./about.webp"
-              className="img-product"
-              initial={{ scale: 1 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            />
-          )}
+        <motion.img
+          src={
+            selectedVariant?.image
+              ? `https://ecommerce.ahmedgamaldev.com/public/app/${selectedVariant.image}`
+              : gallery?.[0] || './about.webp'
+          }
+          className="h-full w-full object-contain"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.15 }}
+          transition={{ duration: 0.3 }}
+          onMouseOver={
+            !attributes_value
+              ? () => {
+                  const random = getRandomInRange(1, gallery?.length - 1);
+                  changeImage(gallery?.[random] || srcImage);
+                }
+              : undefined
+          }
+          onMouseOut={
+            !attributes_value
+              ? () => {
+                  changeImage(selectedAttr?.image || gallery?.[0] || './about.webp');
+                }
+              : undefined
+          }
+        />
       </div>
 
       {/* Product Details */}
-      
-        <div className="p-4">
-          <Link href={`/shop/product/${id}`}>
-            <h3 className="text-lg font-semibold mb-2">{title?title.split(" ").slice(0,8).join(" "):''}</h3>
-          </Link>
-          {/* Price and Sale Price */}
-          <div className="flex items-center gap-2 mb-4">
-            {salePrice ? (
-              <>
-                <span className="text-xl font-bold text-gray-800">${salePrice}</span>
-                <span className="text-sm text-gray-500 line-through">${price}</span>
-              </>
-            ) : (
-              <span className="text-xl font-bold text-gray-800">${price}</span>
-            )}
-          </div>
+      <div className="p-4">
+        <Link href={`/shop/product/${id}`}>
+          <h3 className="text-lg font-semibold mb-2">{title ? title.split(" ").slice(0, 8).join(" ") : ''}</h3>
+        </Link>
 
-          {/* Add to Cart and Wishlist Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleaddtocart(id)}
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex-1"
-            >
-              <FaShoppingCart className="w-5 h-5" />
-              <span>Add to Cart</span>
-            {loadingaddtocat?(<svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
-  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
-  </svg>):('')}
-            </button>
-            <button onClick={() => handleaddtowishlist(id)} className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-300">
-              {
-                loadingaddtowishlist?(<svg aria-hidden="true" class="inline w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-              </svg>):(
-              <FaHeart className="w-5 h-5 text-gray-600" />)}    
-            </button>
-          </div>
+        {/* Price Display */}
+        <div className="flex items-center gap-2 mb-4">
+          {selectedAttr?.price ? (
+            <>
+              <span className="text-xl font-bold text-gray-800">${selectedAttributes.price}</span>
+              {price && <span className="text-sm text-gray-500 line-through">${selectedVariant?.price || price}</span>}
+            </>
+          ) : (
+            <span className="text-xl font-bold text-gray-800">${selectedVariant?.price || price}</span>
+          )}
         </div>
+
+        {/* Size and Color Selection */}
+        {attributes_value?.length > 0 && (
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(groupedAttributes).map(([key, values]) => (
+                <div key={key}>
+                  <h4 className="font-semibold mb-1 capitalize">{key}:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {[...values].map((val, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleAttributeChange(key, val)}
+                        className={`px-3 py-1 border rounded text-sm capitalize ${
+                          selectedAttributes[key] === val ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                        }`}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Add to Cart & Wishlist */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleaddtocart(id)}
+            className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex-1"
+          >
+            <FaShoppingCart className="w-5 h-5" />
+            <span>أضف للعربة</span>
+            {loadingaddtocat && (
+              <svg aria-hidden="true" role="status" className="inline w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none">
+                <path d="M100 50.59C100 78.205 77.614 100.591 50 100.591C22.386 100.591 0 78.205 0 50.59C0 22.977 22.386 0.591 50 0.591C77.614 0.591 100 22.977 100 50.59Z" fill="#E5E7EB"/>
+                <path d="M93.968 39.04C96.393 38.404 97.862 35.912 97.008 33.554C95.293 28.823 92.871 24.369 89.817 20.348C85.845 15.119 80.883 10.724 75.212 7.413C69.542 4.102 63.275 1.94 56.77 1.051C51.767 0.368 46.698 0.447 41.735 1.279C39.261 1.693 37.813 4.198 38.45 6.623C39.087 9.049 41.569 10.472 44.051 10.107C47.851 9.549 51.719 9.527 55.54 10.049C60.864 10.777 65.993 12.546 70.633 15.255C75.274 17.965 79.335 21.562 82.585 25.841C84.918 28.912 86.8 32.291 88.181 35.876C89.083 38.216 91.542 39.678 93.968 39.041Z" fill="currentColor"/>
+              </svg>
+            )}
+          </button>
+
+          <button
+            onClick={() => handleaddtowishlist(id)}
+            className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-300"
+          >
+            {loadingaddtowishlist ? (
+              <svg aria-hidden="true" className="inline w-6 h-6 text-gray-200 animate-spin fill-gray-600" viewBox="0 0 100 101" fill="none">
+                <path d="M100 50.59C100 78.205 77.614 100.591 50 100.591C22.386 100.591 0 78.205 0 50.59C0 22.977 22.386 0.591 50 0.591C77.614 0.591 100 22.977 100 50.59Z" fill="currentColor"/>
+                <path d="M93.968 39.04C96.393 38.404 97.862 35.912 97.008 33.554..." fill="currentFill"/>
+              </svg>
+            ) : (
+              <FaHeart className="w-5 h-5 text-gray-600" />
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

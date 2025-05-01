@@ -3,6 +3,7 @@ import React,{useState,useEffect} from "react";
 import axios from "axios";
 import env from "@/env";
 import Swal from "sweetalert2";
+import { getToken } from "@/lib/helper";
 
 const ReviewProduct=(props) =>{
   const [reviews,setReviews]=useState([])
@@ -30,7 +31,7 @@ const ReviewProduct=(props) =>{
         headers:{
           'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+              'Authorization': `Bearer ${getToken("token_app")}`
         }
       });
       const result = await response.json();
@@ -47,7 +48,7 @@ const ReviewProduct=(props) =>{
     e.preventDefault();
     console.log("Review Submitted:", review);
   
-    if (localStorage.getItem("token_app") != null) {
+    if (getToken("token_app") != undefined) {
       try {
         setLoading(true)
         await axios.post(env.baseUrl + "/review/store",
@@ -59,7 +60,7 @@ const ReviewProduct=(props) =>{
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token_app")}`
+              'Authorization': `Bearer ${getToken("token_app")}`
             },
           }
         );
@@ -98,14 +99,12 @@ const ReviewProduct=(props) =>{
     }
   };
   
-
   useEffect(() => {
 
     fetchReviews();
   },[])
 
   const ratingsSummary = [5, 4, 3, 2, 1].map(rating => aggrReviews[rating.toFixed(2)] ?? 0);
-  console.log(ratingsSummary)
 
     return (
       <section className="py-24 relative">
