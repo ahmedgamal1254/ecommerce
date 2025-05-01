@@ -20,14 +20,7 @@ const ProductCard = ({ product }) => {
   const [loadingaddtowishlist, setLoadingaddtowishlist] = useState(false);
 
   const { id, title, price, salePrice, gallery, attributes_value } = product;
-  const defaultAttr = attributes_value && attributes_value.length > 0 ? attributes_value[0] : null;
-  const [selectedAttr, setSelectedAttr] = useState(defaultAttr);
-  const [srcImage, setSrcImage] = useState(defaultAttr?.image
-    ? `https://ecommerce.ahmedgamaldev.com/public/app/${defaultAttr.image}`
-    : (gallery && gallery[0])
-      ? `${gallery[0]}`
-      : ''
-  );
+  const [srcImage, setSrcImage] = useState((gallery && gallery[0]) ? `${gallery[0]}`: '');
 
   const fetchCart = async () => {
     try {
@@ -131,62 +124,29 @@ const ProductCard = ({ product }) => {
     setSrcImage(src);
   };
 
-  const [selectedAttributes, setSelectedAttributes] = useState({});
-  const [selectedVariant, setSelectedVariant] = useState(null);
-
-  useEffect(() => {
-    const match = attributes_value?.find(attr => {
-      return Object.entries(selectedAttributes).every(([key, val]) => attr[key] === val);
-    });
-    if (match) setSelectedVariant(match);
-  }, [selectedAttributes]);
-
-  const handleAttributeChange = (key, value) => {
-    setSelectedAttributes(prev => ({ ...prev, [key]: value }));
-  };
-
-  const excludedKeys = ['price', 'image'];
-  const groupedAttributes = {};
-
-  if (Array.isArray(attributes_value)) {
-    attributes_value.forEach(attr => {
-      Object.entries(attr).forEach(([key, value]) => {
-        if (!excludedKeys.includes(key)) {
-          if (!groupedAttributes[key]) groupedAttributes[key] = new Set();
-          groupedAttributes[key].add(value);
-        }
-      });
-    });
-  }
-
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       {/* Image Section */}
       <div className="relative h-96">
         <motion.img
           src={
-            selectedVariant?.image
-              ? `https://ecommerce.ahmedgamaldev.com/public/app/${selectedVariant.image}`
-              : gallery?.[0] || './about.webp'
+            gallery?.[0] || './about.webp'
           }
+          alt={`${title}`}
           className="h-full w-full object-contain"
           initial={{ scale: 1 }}
           whileHover={{ scale: 1.15 }}
           transition={{ duration: 0.3 }}
           onMouseOver={
-            !attributes_value
-              ? () => {
+            () => {
                   const random = getRandomInRange(1, gallery?.length - 1);
-                  changeImage(gallery?.[random] || srcImage);
+                  changeImage(gallery?.[random]);
                 }
-              : undefined
           }
           onMouseOut={
-            !attributes_value
-              ? () => {
-                  changeImage(selectedAttr?.image || gallery?.[0] || './about.webp');
+            () => {
+                  changeImage(gallery?.[0] || './about.webp');
                 }
-              : undefined
           }
         />
       </div>
@@ -199,41 +159,8 @@ const ProductCard = ({ product }) => {
 
         {/* Price Display */}
         <div className="flex items-center gap-2 mb-4">
-          {selectedAttr?.price ? (
-            <>
-              <span className="text-xl font-bold text-gray-800">${selectedAttributes.price}</span>
-              {price && <span className="text-sm text-gray-500 line-through">${selectedVariant?.price || price}</span>}
-            </>
-          ) : (
-            <span className="text-xl font-bold text-gray-800">${selectedVariant?.price || price}</span>
-          )}
+          <span className="text-xl font-bold text-gray-800">${price}</span>
         </div>
-
-        {/* Size and Color Selection */}
-        {attributes_value?.length > 0 && (
-          <div className="mb-4">
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(groupedAttributes).map(([key, values]) => (
-                <div key={key}>
-                  <h4 className="font-semibold mb-1 capitalize">{key}:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {[...values].map((val, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleAttributeChange(key, val)}
-                        className={`px-3 py-1 border rounded text-sm capitalize ${
-                          selectedAttributes[key] === val ? 'bg-blue-600 text-white' : 'bg-gray-100'
-                        }`}
-                      >
-                        {val}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Add to Cart & Wishlist */}
         <div className="flex items-center gap-2">
