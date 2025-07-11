@@ -3,6 +3,7 @@ import axios from "axios";
 import { createContext, useState, useEffect } from "react";
 import env from "./env";
 import { getToken } from "./lib/helper";
+import { getCart } from "./lib/cart";
 
 export const CartContext = createContext();
 
@@ -33,6 +34,9 @@ export const CartProvider = ({ children }) => {
         };
     
         fetchCart();
+      }else{
+          console.log(getCart())      
+          setCart(getCart())
       }
     }
   }, []);

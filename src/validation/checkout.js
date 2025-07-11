@@ -17,6 +17,6 @@ export const CheckoutSchema = Yup.object().shape({
       .required('الرمز البريدي مطلوب'),
     note: Yup.string(), // اختياري
     payment: Yup.string()
-      .oneOf(['credit_card', 'cash', 'paypal'], 'طريقة الدفع غير صالحة')
+      .oneOf(['cash_on_delivery'], 'طريقة الدفع غير صالحة')
       .required('طريقة الدفع مطلوبة'),
   });

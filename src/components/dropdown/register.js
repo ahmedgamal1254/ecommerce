@@ -7,13 +7,13 @@ const items = [
   {
     key: '1',
     label: (<Link href={"/auth/register"}>
-      MyAccount
+    حساب جديد
     </Link>),
   },
   {
     key: '3',
     label: (<Link href={"/auth/login"}>
-      MyAccount
+      تسجيل دخول
     </Link>),
   },
 ];
@@ -21,8 +21,9 @@ const Register = () => (
   <Dropdown menu={{ items }}>
     <a onClick={e => e.preventDefault()}>
       <Space>
-        <FaUser />
-        Register
+        <span className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded'>
+حساب جديد
+        </span>
       </Space>
     </a>
   </Dropdown>

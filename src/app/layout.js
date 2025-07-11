@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/header/Navbar";
 import { ProductsProvider } from "@/ProductsContext";
 import BelowHeader from "@/components/header/belowHeader";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +26,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" dir="rtl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -33,8 +34,9 @@ export default function RootLayout({ children }) {
           <WishlistProvider>
             <ProductsProvider>
               <NextTopLoader />
+              <Toaster position="top-center" />
               <Navbar />
-              <BelowHeader />
+              {/* <BelowHeader /> */}
               {children}
               <Footer />
             </ProductsProvider>

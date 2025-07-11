@@ -30,8 +30,8 @@ export default function Register() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
       });
 
-      setToken("token_app", res.data.data.token);
-      setToken("user", JSON.stringify(res.data.data.user));
+      setToken("token_app", res.data.token);
+      setToken("user", JSON.stringify(res.data.user));
 
       Swal.fire({
         title: "Success",
@@ -98,6 +98,18 @@ export default function Register() {
               />
               {errors.password && <span className="text-sm text-red-500">{errors.password.message}</span>}
               {errorsServer.password && <span className="text-sm text-red-500">{errorsServer.password}</span>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Password Confirm</label>
+              <input
+                type="password"
+                {...register("password_confirmation")}
+                className={`mt-1 block w-full px-4 py-2 border ${
+                  errors.password_confirmation ? "border-red-500" : "border-gray-300"
+                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+              />
+              {errors.password_confirmation && <span className="text-sm text-red-500">{errors.password_confirmation.message}</span>}
+              {errorsServer.password_confirmation && <span className="text-sm text-red-500">{errorsServer.password_confirmation}</span>}
             </div>
             <button
               type="submit"

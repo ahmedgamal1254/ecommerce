@@ -69,11 +69,11 @@ const ProductSidebarFilter = () => {
 
   return (
     <div className="w-64 bg-gray-100 p-4">
-      <h2 className="text-lg font-semibold mb-4">Filters</h2>
+      <h2 className="text-lg font-semibold mb-4">تصفية المنتجات</h2>
 
       {/* Category Filter */}
       <div className="mb-6">
-        <h3 className="font-medium mb-2">Category</h3>
+        <h3 className="font-medium mb-2">التصنيفات</h3>
         {categories.length > 0
           ? categories.map((category) => (
               <label key={category.id} className="flex items-center mb-1">
@@ -91,7 +91,7 @@ const ProductSidebarFilter = () => {
 
       {/* Price Filter */}
       <div className="mb-6">
-        <h3 className="font-medium mb-2">Price</h3>
+        <h3 className="font-medium mb-2">العرض حسب السعر</h3>
         <div className="row-price">
           <div>
                 <input
@@ -102,7 +102,7 @@ const ProductSidebarFilter = () => {
                 }
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
-              <div className="text-sm mt-1">Min: ${selectedPriceRange[0]}</div>
+              <div className="text-sm mt-1">أقل سعر: ${selectedPriceRange[0]}</div>
           </div>
           <div>
               <input
@@ -113,20 +113,9 @@ const ProductSidebarFilter = () => {
               }
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             />
-            <div className="text-sm mt-1">Max: ${selectedPriceRange[1]}</div>
+            <div className="text-sm mt-1">أعلى سعر: ${selectedPriceRange[1]}</div>
           </div>
         </div>
-      </div>
-
-      {/* Rating Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Rating</h3>
-        {[4, 3, 2].map((stars) => (
-          <label key={stars} className="flex items-center mb-1">
-            <input type="checkbox" className="form-checkbox" />
-            <span className="ml-2">{stars} Stars & Up</span>
-          </label>
-        ))}
       </div>
     </div>
   );

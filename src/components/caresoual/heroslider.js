@@ -1,101 +1,118 @@
 "use client";
 
 import React, { useState } from "react";
-import { Carousel, Button } from "antd";
+import { Carousel } from "antd";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const slides = [
   {
-    image: "/slider/img1.webp",
+    image: "/slider/bg-2.webp",
     title: "مرحبًا بكم في متجرنا",
-    text: "أفضل المنتجات بين يديك",
+    text: "تحديثات يومية وعروض مميزة",
     button: "تسوق الآن",
-    path:"/shop"
+    path: "/shop",
+    align: "right",
   },
   {
-    image: "/slider/img2.webp",
-    title: "اكتشف مجموعاتنا الجديدة",
-    text: "تحديثات يومية وعروض مميزة",
+    image: "/slider/img1.webp",
+    title: "مجموعاتنا الجديدة",
+    text: "أناقة لا تضاهى في كل موسم",
     button: "استعرض المنتجات",
-    path:"/shop"
+    path: "/shop",
+    align: "center",
   },
   {
     image: "/slider/img1.webp",
     title: "توصيل سريع وآمن",
     text: "من الباب إلى الباب في وقت قياسي",
     button: "تعرف أكثر",
-    path:"/about"
+    path: "/about",
+    align: "center",
   },
 ];
 
 const fadeUp = {
   initial: { y: 100, opacity: 0 },
   animate: { y: 0, opacity: 1 },
-  transition: { duration: 0.8, ease: "easeInOut" },
-};
-
-const fadeDown = {
-  initial: { y: -200, opacity: 0 },
-  animate: { y: 0, opacity: 1 },
-  transition: { duration: 0.8, ease: "easeInOut" },
-};
-
-const fadeLeft = {
-  initial: { x: -200, opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  transition: { duration: 0.8, ease: "easeInOut" },
+  transition: { duration: 0.6, ease: "easeOut" },
 };
 
 const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Update current slide index after carousel changes
   const handleAfterChange = (current) => {
     setCurrentSlide(current);
   };
 
   return (
-    <div className="">
+    <div className="relative">
       <Carousel
         arrows
         infinite
         autoplay
         dotPosition="right"
-        afterChange={handleAfterChange} // Track slide changes
+        afterChange={handleAfterChange}
       >
-        {slides.map((slide, index) => (
-          <div key={index}>
-            <motion.div
-              key={currentSlide} // Force re-render on slide change
-              style={{
-                backgroundImage: `url(${slide.image})`,
-                height: "600px",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                color: "#fff",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-                gap: "12px",
-              }}
-            >
-              <motion.h1 className="text-5xl font-bold mb-4" {...fadeUp}>
-                {slide.title}
-              </motion.h1>
-              <motion.p className="text-xl mb-8" {...fadeUp}>
-                {slide.text}
-              </motion.p>
-              <motion.div {...fadeDown}>
-                <Link href={slide.path} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" size="large">
-                  {slide.button}
-                </Link>
+        {slides.map((slide, index) => {
+          // Determine alignment classes
+          const alignment =
+            slide.align === "left"
+              ? "items-start text-left"
+              : slide.align === "right"
+              ? "items-end text-right"
+              : "items-center text-center";
+
+          return (
+            <div key={index}>
+              <motion.div
+                key={currentSlide}
+                className={`relative flex h-[600px] md:h-[700px] text-white justify-center`}
+                style={{
+                  backgroundImage: `url(${slide.image})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-50" />
+
+                {/* Slide Content */}
+                <motion.div
+                  className={`relative z-10 flex flex-col justify-center gap-6 max-w-4xl w-full h-full px-6 ${alignment}`}
+                  initial="initial"
+                  animate="animate"
+                  variants={fadeUp}
+                >
+                  <motion.h1
+                    className="text-4xl md:text-6xl font-bold"
+                    {...fadeUp}
+                  >
+                    {slide.title}
+                  </motion.h1>
+
+                  <motion.p
+                    className="text-xl md:text-2xl text-gray-200"
+                    {...fadeUp}
+                  >
+                    {slide.text}
+                  </motion.p>
+
+                  <motion.div {...fadeUp}>
+                    <Link
+                      href={slide.path}
+                      className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-base font-medium transition-all shadow-lg"
+                    >
+                      {slide.button}
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </motion.div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </Carousel>
     </div>
   );

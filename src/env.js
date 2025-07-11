@@ -1,7 +1,7 @@
 const env = {
-    baseUrl: "https://ecommerce.ahmedgamaldev.com/api",
-    base: "https://ecommerce.ahmedgamaldev.com/",
+    baseUrl: "https://weaver.ahmedgamaldev.com/api",
+    baseApp: "https://weaver.ahmedgamaldev.com",
     isProduction: "false",
   };
   
-  export default env;
+export default env;

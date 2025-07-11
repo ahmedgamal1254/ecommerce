@@ -8,7 +8,7 @@ const items = [
     key: '1',
     label: (
       <Link href={"/my-account"}>
-        MyAccount
+        حسابى
       </Link>
     ),
   },
@@ -19,7 +19,7 @@ const items = [
     key: '2',
     label: (
       <Link href={"/shop"}>
-        Shop
+      المتجر
       </Link>
     ),
     extra: '⌘P',
@@ -29,8 +29,11 @@ const MyAccount = () => (
   <Dropdown menu={{ items }}>
     <a onClick={e => e.preventDefault()}>
       <Space>
-        <FaUser />
-        MyAccount
+        <span className='flex items-center gap-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded'>
+         
+          <FaUser />
+          حسابى
+        </span>
       </Space>
     </a>
   </Dropdown>
