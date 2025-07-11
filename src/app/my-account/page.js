@@ -7,7 +7,10 @@ import axios from "axios";
 import env from "@/env";
 import { FaShoppingCart, FaHeart, FaInfoCircle, FaSignOutAlt, FaFirstOrderAlt } from "react-icons/fa";
 import OrderCard from "@/components/order";
+import { Drawer, Button } from "antd";
+import { SettingOutlined, UserOutlined } from "@ant-design/icons";
 import { getToken, removeToken } from "@/lib/helper";
+import AccountDrawer from "@/components/AccountDrawer";
 
 const MyAccount = () => {
   const router = useRouter();
@@ -17,6 +20,10 @@ const MyAccount = () => {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [activeTab, setActiveTab] = useState("cart");
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
   
   useEffect(() => {
     const fetchProfile = async () => {
@@ -74,8 +81,11 @@ const MyAccount = () => {
 
   return (
     <div className="flex flex-col md:flex-row bg-blue-100">
+          {/* زر فتح السايد بار */}
+  
+      
       {/* Sidebar */}
-      <div className="md:w-1/4 w-full bg-white text-white p-6 md:min-h-screen rounded-lg">
+      <div className="md:w-1/4 w-full bg-white text-white hidden md:block p-6 md:min-h-screen rounded-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">حسابي</h2>
         <ul className="space-y-4">
           <li
@@ -121,6 +131,86 @@ const MyAccount = () => {
 
       {/* Main Content */}
       <div className="md:w-3/4 w-full p-6 bg-white rounded-lg shadow-md overflow-auto">
+              <div className="block md:hidden">
+                  {/* زر فتح السايد بار */}
+<div className="flex justify-start mt-8 mb-4">
+  <Button
+    type="primary"
+    onClick={showDrawer}
+    className="bg-blue-600 flex items-center gap-2 px-6 py-2 text-base rounded-xl shadow-md hover:bg-blue-700"
+  >
+    <SettingOutlined className="text-xl" />
+    <span>مركز الحساب</span>
+  </Button>
+</div>
+
+      {/* Drawer نفسه */}
+      <Drawer
+        title="حسابي"
+        placement="right"
+        onClose={closeDrawer}
+        open={open}
+        width={280}
+        className="text-right"
+      >
+        <ul className="space-y-4 text-white">
+          <li
+            className={`p-3 flex items-center gap-2 bg-blue-500 cursor-pointer rounded-lg transition-all ${
+              activeTab === "cart" ? "bg-blue-700" : "hover:bg-blue-600"
+            }`}
+            onClick={() => {
+              setActiveTab("cart");
+              closeDrawer();
+            }}
+          >
+            <FaShoppingCart /> سلة المشتريات
+          </li>
+          <li
+            className={`p-3 flex items-center gap-2 bg-blue-500 cursor-pointer rounded-lg transition-all ${
+              activeTab === "wishlist" ? "bg-blue-700" : "hover:bg-blue-600"
+            }`}
+            onClick={() => {
+              setActiveTab("wishlist");
+              closeDrawer();
+            }}
+          >
+            <FaHeart /> قائمة الأمنيات
+          </li>
+          <li
+            className={`p-3 flex items-center gap-2 bg-blue-500 cursor-pointer rounded-lg transition-all ${
+              activeTab === "orders" ? "bg-blue-700" : "hover:bg-blue-600"
+            }`}
+            onClick={() => {
+              setActiveTab("orders");
+              closeDrawer();
+            }}
+          >
+            <FaFirstOrderAlt /> الطلبات
+          </li>
+          <li
+            className={`p-3 flex items-center gap-2 bg-blue-500 cursor-pointer rounded-lg transition-all ${
+              activeTab === "info" ? "bg-blue-700" : "hover:bg-blue-600"
+            }`}
+            onClick={() => {
+              setActiveTab("info");
+              closeDrawer();
+            }}
+          >
+            <FaInfoCircle /> معلوماتي
+          </li>
+          <li
+            className="p-3 flex items-center gap-2 bg-red-700 cursor-pointer text-white hover:text-red-500 rounded-lg"
+            onClick={() => {
+              handleLogout();
+              closeDrawer();
+            }}
+          >
+            <FaSignOutAlt /> تسجيل الخروج
+          </li>
+        </ul>
+      </Drawer>
+          </div>
+
         {activeTab === "cart" && (
           <div>
             <h2 className="text-xl font-semibold mb-4">🛒 سلة المشتريات</h2>

@@ -33,7 +33,7 @@ const Navbar = () => {
             <div className="flex-shrink-0">
               <Link href="/">
                 <span className="text-xl font-bold text-gray-800 cursor-pointer">
-                  <Image alt={"weaver"} src={"/logo.png"} width={200} height={200} />
+                  <Image alt={"weaver"} src={"/logo.png"} width={180} height={180} />
                 </span>
               </Link>
             </div>

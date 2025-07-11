@@ -1,12 +1,14 @@
 "use client";
 import React, { useState, useContext, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaFilter, FaSearch } from "react-icons/fa";
 import { motion } from "framer-motion";
 import ProductCard from "@/components/Product";
 import env from "@/env";
 import LoadingProduct from "@/components/loadingProduct";
 import ProductSidebarFilter from "@/components/sidebar";
 import { ProductsContext } from "@/ProductsContext";
+import { Drawer, Button } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import { Toast } from "@/lib/toast";
 
@@ -15,6 +17,10 @@ export default function ShopPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
 
   const handleSearch = async (term) => {
     try {
@@ -67,14 +73,33 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 py-12 px-6 md:px-10">
-      <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
-        جميع المنتجات
-      </h1>
+  <div className="flex justify-between items-center mb-12">
+      <h1 className="text-4xl font-extrabold text-gray-800">جميع المنتجات</h1>
+
+      <Button
+        type="primary"
+        icon={<FilterOutlined />}
+        onClick={showDrawer}
+        className="bg-blue-600 text-lg p-4 md:hidden"
+      >
+        تصفية
+      </Button>
+
+      <Drawer
+        title="فلترة المنتجات"
+        placement="right"
+        onClose={closeDrawer}
+        open={open}
+        width={300}
+      >
+        <ProductSidebarFilter />
+      </Drawer>
+    </div>
 
       {/* Search & Filter */}
       <div className="max-w-7xl mx-auto mb-10 grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Sidebar */}
-        <div className="md:col-span-3">
+        <div className="hidden md:block md:col-span-3">
           <ProductSidebarFilter />
         </div>
 

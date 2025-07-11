@@ -225,7 +225,7 @@ export default function Home() {
             ) : (
               cart.map(item => (
                 <div key={item.id} className="flex flex-col gap-4 border rounded-lg p-4 shadow-sm items-start">
-                  <div className="flex gap-4  p-4 shadow-sm items-center">
+                  <div className="flex flex-col items-start md:flex-row gap-4  p-4 shadow-sm">
                     <div className="w-24 h-24">
                       <img
                         src={item.product.gallery?.[0] || item.product.images?.[0] || "https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"}

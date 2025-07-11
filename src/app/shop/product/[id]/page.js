@@ -260,7 +260,7 @@ const ProductPage = () => {
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* ✅ Main Image */}
-        <div className="relative flex flex-row-reverse">
+        <div className="relative flex flex-col md:flex-row-reverse">
           <img
             height={300}
             width={600}
@@ -270,7 +270,7 @@ const ProductPage = () => {
             alt="Product Image"
             className="w-full h-auto rounded-lg"
           />
-          <div className="mt-4 flex flex-col gap-2 overflow-x-hidden">
+          <div className="mt-4 flex justify-center flex-row md:flex-col gap-2 overflow-y-hidden md:overflow-x-hidden">
             {product.gallery.map((image, index) => (
               <img
                 key={index}

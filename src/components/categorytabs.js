@@ -23,7 +23,7 @@ const CategoryTabs = () => {
 
   return (
     <>
-      <div className="w-full flex items-center justify-between px-10 md:px-8 py-4 mt-10" dir="rtl">
+      <div className="w-full flex items-center justify-between px-2 md:px-10 md:px-8 py-4 mt-10" dir="rtl">
         <h2 className="text-xl md:text-2xl font-bold text-gray-800">
           تسوق حسب الأقسام
         </h2>
@@ -53,10 +53,17 @@ const CategoryTabs = () => {
                     className="w-full h-300 object-contain mx-auto mb-2"
                   />
                 </Link>
+                            <span className="text-center text-xl text-bold">
+              {
+                cat.title
+              }
+            </span>
                 {/* <div className="font-medium">{cat.title}</div> */}
                 {index === activeIndex && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-yellow-400" />
                 )}
+
+
               </div>
             </SwiperSlide>
           ))}

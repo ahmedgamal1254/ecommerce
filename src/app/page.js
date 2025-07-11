@@ -35,7 +35,7 @@ export default function Home() {
       imageUrl="/slider/bg-2.webp"
       reverse
     />
-    <Products title="أحدث تصميمات من الهودى" />
+    <Products title="أحدث منتجاتنا" />
     <FeaturesAndAbout />
     {/* <PromoOffer /> */}
     {/* <ContactUs /> */}
