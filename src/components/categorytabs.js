@@ -7,8 +7,6 @@ import "swiper/css";
 import Link from "next/link";
 import env from "../env";
 
-const baseImageUrl = "https://ecommerce.ahmedgamaldev.com/public/app/";
-
 const CategoryTabs = () => {
   const [categories, setCategories] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -48,7 +46,7 @@ const CategoryTabs = () => {
                   }
                 )}
               >
-                <Link href={`/shop/category/${cat.slug}`}>
+                <Link href={`/shop/category/${cat.id}`}>
                   <img
                     src={`${cat.image}`}
                     alt={cat.title}
