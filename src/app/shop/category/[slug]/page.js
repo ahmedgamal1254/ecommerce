@@ -5,6 +5,8 @@ import ProductCard from "@/components/Product";
 import env from "@/env";
 import LoadingProduct from "@/components/loadingProduct";
 import { useParams } from "next/navigation";
+import { Toast } from "@/lib/toast";
+
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -12,38 +14,46 @@ export default function ShopPage() {
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(false);
+const [loadedPages, setLoadedPages] = useState([]);
 
   const params = useParams();
 
-  useEffect(() => {
-    const fetchProducts = async (page) => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${env.baseUrl}/product/parent-category/${params.slug}?page=${page}`
-        );
-        const result = await response.json();
+  const fetchProducts = async () => {
+    try {
+      if (loadedPages.includes(page)) return;
 
-        if(result.data.length <= 0){
-          Toast.fire({
-            icon:"warning",
-            title:"لا توجد نتائج أخرى",
-            timer:2000
-          })
-        }
+      setLoading(true);
+      const response = await fetch(
+        `${env.baseUrl}/product/parent-category/${params.slug}?page=${page}`
+      );
+      const result = await response.json();
 
-        setProducts(result.data || []);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
-        setLoading(false);
+      if (result.data?.length === 0) {
+        Toast.fire({
+          icon: "warning",
+          title: "لا توجد نتائج أخرى",
+          timer: 2000,
+        });
+        return;
       }
-    };
 
-    if (params?.slug) {
-      fetchProducts(page);
+        setProducts((prev) => {
+          const ids = new Set(prev.map((item) => item.id));
+          const newItems = result.data.filter((item) => !ids.has(item.id));
+          return [...prev, ...newItems];
+        });
+        setLoadedPages((prev) => [...prev, page]);
+
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [params?.slug]);
+  };
+
+useEffect(() => {
+  fetchProducts();
+}, [page,params?.slug]);
 
   const loadMore = async () => {
     setPage(page => page+1)
@@ -87,7 +97,9 @@ export default function ShopPage() {
             )
             )
           }
+        </div>
 
+        
           {!loading && products.length >= 6 && (
             <div className="flex justify-center mt-10">
               <button
@@ -115,15 +127,14 @@ export default function ShopPage() {
                         fill="currentColor"
                       />
                     </svg>
-                    Loading...
+                    عرض المزيد...
                   </span>
                 ) : (
-                  "Load More"
+                  "عرض المزيد"
                 )}
               </button>
             </div>
           )}
-        </div>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ export default function Products({title}) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(env.baseUrl + "/products?limit=4&page=1");
+        const response = await fetch(env.baseUrl + "/products?limit=8&page=1");
         const result = await response.json();
         setProducts(result.data.data);
       } catch (error) {
