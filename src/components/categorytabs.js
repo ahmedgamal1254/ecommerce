@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Link from "next/link";
 import env from "../env";
+import { FaShoppingBag } from "react-icons/fa";
 
 const CategoryTabs = () => {
   const [categories, setCategories] = useState([]);
@@ -23,12 +24,13 @@ const CategoryTabs = () => {
 
   return (
     <>
-      <div className="w-full flex items-center justify-between px-2 md:px-10 md:px-8 py-4 mt-10" dir="rtl">
+      <div className="w-full flex items-center justify-between px-4 md:px-10 md:px-8 py-4 mt-10" dir="rtl">
         <h2 className="text-xl md:text-2xl font-bold text-gray-800">
           تسوق حسب الأقسام
         </h2>
-        <Link href={"/shop"} className="bg-blue-600 text-white text-sm md:text-base font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-          عرض جميع المنتجات
+        <Link href={"/shop"} className="flex gap-2 items-center bg-blue-600 text-white text-sm md:text-base font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          عرض الكل
+          <FaShoppingBag />
         </Link>
       </div>
       {/* Mobile: Swiper */}
@@ -53,7 +55,7 @@ const CategoryTabs = () => {
                     className="w-full h-300 object-contain mx-auto mb-2"
                   />
                 </Link>
-                            <span className="text-center text-xl text-bold">
+            <span className="text-center text-xl text-bold">
               {
                 cat.title
               }
