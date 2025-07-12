@@ -37,7 +37,7 @@ const ReviewProduct = (props) => {
         },
       });
       const result = await response.json();
-      setavgReviews(result.data.average);
+      setavgReviews(result.data.average ?? 0);
       setCountReviews(result.data.count);
       setReviews(result.data.reviews.data);
       setaggrReviews(result.data.reviewCounts);
@@ -87,7 +87,7 @@ const ReviewProduct = (props) => {
     fetchReviews();
   }, []);
 
-  const ratingsSummary = [5, 4, 3, 2, 1].map((rating) => aggrReviews[rating.toFixed(2)] ?? 0);
+  const ratingsSummary = [5, 4, 3, 2, 1].map((rating) => aggrReviews[rating] ?? 0);
 
   return (
     <section className="py-24 relative" dir="rtl">

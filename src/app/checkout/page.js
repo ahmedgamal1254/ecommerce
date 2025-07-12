@@ -34,8 +34,11 @@ const Checkout = () => {
       return;
     }
 
+    let checkout_url="checkout-guest"
+    checkout_url=getToken("token_app") ? "checkout":"checkout-guest"
+
     try {
-      const response = await axios.post(env.baseUrl + "/checkout-guest", {
+      const response = await axios.post(env.baseUrl + "/" + checkout_url, {
         ...data,
         cart,
       }, {

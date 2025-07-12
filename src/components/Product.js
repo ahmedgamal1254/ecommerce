@@ -131,7 +131,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <motion.div 
+    <div 
       className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-lg hover:shadow-xl 
       transition-shadow duration-300 w-80 mx-auto"
       initial={{ opacity: 0, y: 20 }}
@@ -140,7 +140,7 @@ const ProductCard = ({ product }) => {
     >
       {/* Image Section */}
       <div className="relative h-64 w-full overflow-hidden">
-        <motion.img
+        <img
           src={srcImage}
           alt={title}
           className="h-64 w-full object-cover transition-transform duration-500"
@@ -186,7 +186,7 @@ const ProductCard = ({ product }) => {
                             </h3>
               </Link>
             ):(
-          <motion.button
+          <button
             onClick={() => handleAddToCart(id)}
             className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex-1 text-sm font-medium"
             whileHover={{ scale: 1.05 }}
@@ -212,12 +212,12 @@ const ProductCard = ({ product }) => {
                 />
               </svg>
             )}
-          </motion.button>
+          </button>
 
             )
           }
 
-          <motion.button
+          <button
             onClick={() => handleAddToWishlist(id)}
             className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-300"
             whileHover={{ scale: 1.1 }}
@@ -242,10 +242,10 @@ const ProductCard = ({ product }) => {
             ) : (
               <FaHeart className="w-5 h-5 text-gray-600 hover:text-red-500 transition-colors" />
             )}
-          </motion.button>
+          </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
