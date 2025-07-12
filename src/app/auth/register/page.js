@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisterSchema } from "@/validation/registerSchema";
 import { getToken, setToken } from "@/lib/helper";
+import { sendCartToServer } from "@/lib/sendCarttoServer";
 
 export default function Register() {
   const router = useRouter();
@@ -42,6 +43,12 @@ export default function Register() {
       });
 
       SetIsSubmitting(false)
+
+      
+      /**
+       * محاكاة نقل بيانات عربة التسوق لحساب العميل
+       */
+      sendCartToServer()
 
       router.push("/");
     } catch (error) {

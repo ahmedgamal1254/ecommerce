@@ -1,6 +1,7 @@
 "use client";
 import env from "@/env";
 import { getToken, setToken } from "@/lib/helper";
+import { sendCartToServer } from "@/lib/sendCarttoServer";
 import { LoginSchema } from "@/validation/loginSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
@@ -18,13 +19,10 @@ export default function Login() {
   });
   
   const [errorsServer, setErrorsServer] = useState({});
-  const [loading,setLoading] = useState(false)
-
-    
-    if (getToken("token_app")) {
-      router.push("/my-account")          
-    }
-
+  const [loading,setLoading] = useState(false)    
+  if (getToken("token_app")) {
+    router.push("/my-account")          
+  }
 
   const Submit = async (data) => {
     try {
@@ -45,6 +43,11 @@ export default function Login() {
         timer: 1500,
         confirmButtonText: "إغلاق",
       });
+
+      /**
+       * محاكاة نقل بيانات عربة التسوق لحساب العميل
+       */
+      sendCartToServer()
 
       router.push("/");
     } catch (error) {
